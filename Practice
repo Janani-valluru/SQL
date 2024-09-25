@@ -1,0 +1,4 @@
+1. List the name, employee code and designationcode of each employee of the office
+
+select empname,empcode,desigcode 
+from emp;
