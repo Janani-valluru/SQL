@@ -1,4 +1,37 @@
 1. List the name, employee code and designationcode of each employee of the office
-
 select empname,empcode,desigcode 
 from emp;
+
+
+2. List all the departments and the budgets
+select * from dept;
+
+3. List the employees and their respective department names
+SELECT dept.deptcode, empname
+FROM emp,dept
+WHERE emp.deptcode = dept.deptcode;
+
+
+4. List the employees who are not having any superior to work under
+SELECT empcode , empname , supcode
+from emp
+where supcode is not null;
+
+
+
+5. List the employees who are working directly under superior most employee of the
+office. (Assume the superior most employee is the employee who does not have a
+supervisor)
+
+SELECT empcode , empname , supcode
+from emp
+where supcode is null;
+
+
+
+6. List the employee(s) who is senior most in the office
+
+SELECT empname, empcode, joindate
+FROM emp
+WHERE joindate = (SELECT MIN(joindate)FROM emp
+);
