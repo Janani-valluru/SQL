@@ -35,3 +35,12 @@ SELECT empname, empcode, joindate
 FROM emp
 WHERE joindate = (SELECT MIN(joindate)FROM emp
 );
+
+7. List the employees who will retire from the office next.
+
+SELECT empname, empcode, birthdate, 
+DATE_ADD(birthdate, INTERVAL 60 YEAR) AS retirement_date
+FROM emp
+WHERE DATE_ADD(birthdate, INTERVAL 60 YEAR) > CURDATE()
+ORDER BY retirement_date ASC
+LIMIT 1;
