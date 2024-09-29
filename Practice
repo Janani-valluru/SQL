@@ -44,3 +44,27 @@ FROM emp
 WHERE DATE_ADD(birthdate, INTERVAL 60 YEAR) > CURDATE()
 ORDER BY retirement_date ASC
 LIMIT 1;
+
+
+8. List the departments with the respective department managers
+SELECT 
+    dept.deptname AS Department,
+    emp.empname AS Manager
+FROM 
+    dept
+JOIN 
+    emp 
+ON 
+    dept.deptcode = emp.deptcode
+WHERE 
+    emp.desigcode = 'MNGR';
+
+9. List the employees who work as ‘manager’ to at least one department.
+
+SELECT DISTINCT
+    emp.empname AS Manager
+FROM 
+    emp
+WHERE 
+    emp.desigcode = 'MNGR';
+
