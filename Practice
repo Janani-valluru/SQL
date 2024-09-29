@@ -68,3 +68,11 @@ FROM
 WHERE 
     emp.desigcode = 'MNGR';
 
+10. List the number of employees working for either ‘accounts’ or ‘personal’ or
+‘purchase’ departments
+
+select empcode , empname , deptcode
+from emp
+where deptcode IN ('PRCH','ACCH','PERS');
+
+
