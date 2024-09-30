@@ -91,6 +91,154 @@ SELECT
     empname AS Employee
 FROM emp
 where deptcode IN ( 'ACCT','PERS');
+13. List the employees working for ‘accounts’ but not for ‘personal’ department
+
+select empname , deptcode
+from emp
+where deptcode in('acct')
+group by empname
+having deptcode not in('pers');
+
+
+14. List the youngest employee of the office
+select empname , birthdate
+from emp 
+where birthdate = 
+	(SELECT max(birthdate)
+    from emp);
+
+
+15. List the employees who are drawing basic pay not equal to 12400.
+select empcode , empname,basicpay
+from emp
+where basicpay !=12400;
+
+
+16. List the employees who are drawing basic salary between 11000 and 12000.
+select empcode , empname,basicpay
+from emp
+where basicpay  between 11000 and 12000;
+
+
+17. List the employees who are drawing basic salary not between 11000 and 12000
+select empcode , empname,basicpay
+from emp
+where basicpay not between 11000 and 12000;
+
+
+18. List the employees who got salary allowance between Rs.1000 to Rs.1500 in the
+month of January 2012.
+
+select emp.empcode ,salary.allow, salary.salmonth
+from emp
+join salary
+where allow between 1000 and 1500
+and 
+salmonth between  '2012-01-01' AND '2012-01-31';
+
+
+19. List the employees whose name ends with ‘i’ or ‘y
+select emp.empname
+from emp
+where empname like '%i'or '%y';
+
+
+20. List the employees who have atleast 25 years of experience
+select empcode , empname
+from emp
+where joindate >=25;
+
+21. List the ‘Salesmen’ who have minimum 30 to 20 years of experience
+	SELECT *
+	FROM emp
+	join dept
+	WHERE deptname = 'sales'
+	AND (YEAR(CURDATE()) - YEAR(joindate)) BETWEEN 20 AND 30;
+	
+
+22. List the basic salary and half of the basic salary for each employee.
+select e.empcode, e.empname , s.basic,  s.basic / 2 AS half_basic
+from emp as e
+join  salary as s
+on e.empcode = s.empcode;
+
+
+23. List the employees and the latest take-home-pay of each employee. (Hint: Takehome-pay = basic + allowance - deductions)
+select emp.empname  ,emp.empcode , (basic+allow-deduct)as takehome_pay
+from salary as s,emp
+where emp.empcode = s.empcode;    
+
+
+24. List the employees and the latest take-home-pay of each employee of ‘Accounts’
+department.
+select emp.empname  ,emp.empcode , (basic+allow-deduct)as takehome_pay
+from emp
+join salary as s
+on emp.empcode = s.empcode
+where emp.deptcode in('ACCT'); 
+
+
+25. List employees and their respective ages.
+SELECT emp.empname, emp.empcode, 
+       TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) AS age 
+FROM emp;
+
+
+26. List all the ‘Accounts’ department employees, first ordered by their age and then
+by their names.
+SELECT emp.empname, emp.empcode, 
+       TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) AS age 
+FROM emp
+where deptcode in('acct')
+ order by age desc,emp.empname ASC;
+
+
+27. List the number of employees directly reporting to ‘Reddy’
+
+SELECT empcode, empname, supcode
+FROM emp
+WHERE supcode = (SELECT empcode FROM emp WHERE empname = 'Reddy');
+
+
+28. List the employees who have atleast one person working under him/her and the
+number of their subordinates. List the employee with highest number of
+subordinates first, next the person with next highest number of subordinates and
+so on.
+
+SELECT emp.empcode, emp.empname, COUNT(e.empcode) AS num_subordinates
+FROM emp
+JOIN emp AS e 
+ON emp.empcode = e.supcode
+GROUP BY emp.empcode, emp.empname
+HAVING num_subordinates > 0
+ORDER BY num_subordinates DESC;
+
+
+29. List the employees who have minimum 3 employees working under him/her.
+SELECT emp.empcode, emp.empname, COUNT(e.empcode) AS num_subordinates
+FROM emp
+JOIN emp AS e 
+ON emp.empcode = e.supcode
+GROUP BY emp.empcode, emp.empname
+HAVING num_subordinates <=3
+ORDER BY num_subordinates DESC;
+
+
+
+30. List the minimum and maximum salaries drawn in each grade code.
+SELECT gradecode, 
+       MIN(basicpay) AS min_salary, 
+       MAX(basicpay) AS max_salary
+FROM emp
+GROUP BY gradecode;
+
+
+31. List the employees with names of their supervisors (Hint: Use Join).
+
+select emp.empcode , emp.empname as employee, e.empname as supervisors
+from emp 
+join emp as e
+where e.empcode = emp.supcode;
 
 
 
