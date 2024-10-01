@@ -220,7 +220,7 @@ FROM emp
 JOIN emp AS e 
 ON emp.empcode = e.supcode
 GROUP BY emp.empcode, emp.empname
-HAVING num_subordinates <=3
+HAVING num_subordinates >=3
 ORDER BY num_subordinates DESC;
 
 
