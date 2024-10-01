@@ -376,6 +376,44 @@ and e.basicpay <
                     
 /*48*/
 
+select e.empname, e.empcode, e.basicpay , e.sex , d.deptname ,dg.desigcode
+from emp as e
+join dept as d on e.deptcode = d.deptcode
+join desig as dg on dg.desigcode = 'MNGR'
+where e.sex = 'F' 
+and e.basicpay <
+ (select max(ep.basicpay)
+	from emp as ep
+	where ep.sex ='F' );
+				
+
+/*49*/
+select e.empname, e.empcode, e.basicpay , e.sex , d.deptname
+from emp as e
+join dept as d on e.deptcode = d.deptcode
+where e.sex = 'M' 
+and e.basicpay >
+ (select MIN(ep.basicpay)
+	from emp as ep
+	where ep.sex ='F' );
+
+
+/*50*/
+SELECT d.deptname
+FROM dept AS d
+JOIN emp AS e ON d.deptcode = e.deptcode
+GROUP BY d.deptname
+HAVING AVG(e.basicpay) > (SELECT AVG(basicpay) FROM emp);
+
+/*51*/
+SELECT e.empname, e.empcode, e.basicpay
+FROM emp AS e
+WHERE e.basicpay < (
+    SELECT AVG(ep.basicpay)
+    FROM emp AS ep
+    JOIN dept AS d ON ep.deptcode = d.deptcode
+    WHERE d.deptname = 'accounts'
+);
 
 
 
