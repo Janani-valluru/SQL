@@ -240,5 +240,148 @@ from emp
 join emp as e
 where e.empcode = emp.supcode;
 
+/*32*/
+SELECT emp.empcode, emp.empname, COUNT(e.empcode) AS num_subordinates
+FROM emp
+JOIN emp AS e 
+ON emp.empcode = e.supcode
+GROUP BY emp.empcode, emp.empname
+HAVING num_subordinates >3
+ORDER BY num_subordinates DESC;
+
+
+/*33*/
+SELECT emp.empcode, emp.empname
+FROM emp
+WHERE emp.empcode NOT IN (SELECT h.empcode FROM history AS h);
+/*34*/
+SELECT emp.empcode , emp.empname,count(h.empcode) as promotion_count
+FROM emp
+JOIN history AS h 
+ON emp.empcode = h.empcode
+group by emp.empcode , emp.empname
+ORDER BY promotion_count DESC;
+
+/*35*/
+SELECT emp.empcode, emp.empname
+FROM emp
+JOIN history AS h 
+ON emp.empcode = h.empcode
+WHERE YEAR(h.changedate) = 1991;
+
+/*36*/
+select distinct d.budget,d.deptcode , sum(basic+allow-deduct)as takehome_pay
+from dept as d 
+join emp as e on d.deptcode=e.deptcode
+join salary as s on e.empcode = s.empcode
+group by d.deptcode , d.budget;
+
+/*37*/
+select UPPER(empname) 
+from emp;
+
+/*38*/
+select e.empcode , e.empname , (basic+allow-deduct)as takehome_pay , s.salmonth 
+from emp as e
+join salary as s on e.empcode = s.empcode
+where s.salmonth = '2012-02-01' 
+and 
+(basic+allow-deduct)>(
+select(s2.basic+s2.allow-s2.deduct) as jain_sal 
+from emp as e2
+join salary as s2 on e2.empcode = s2.empcode
+where e2.empname='jain'
+order by jain_sal desc 
+limit 1 );
+
+/*38*/
+select empname ,basicpay
+from emp 
+where basicpay>(
+select basicpay 
+from emp 
+where empname='Jain');
+
+/*39*/
+select e.empname, e.empcode, e.basicpay
+from emp as e
+where e.basicpay >  (select max(ep.basicpay)
+			from emp as ep
+			where ep.basicpay between 11000 and 12000 );
+/*40*/
+select empname, empcode, basicpay
+from emp as e
+where  basicpay >
+(select  avg(basicpay)
+from emp )                  
+ORDER BY basicpay DESC;                 
+                    
+/*41*/
+select empname, basicpay
+from emp 
+where basicpay =
+(select  max(basicpay)
+from emp 
+)
+order by basicpay desc;
+
+/*42*/
+select empname, basicpay
+from emp 
+where basicpay <
+(select  max(basicpay)
+from emp 
+)
+order by basicpay desc;
+
+/*43*/
+select e.empname, e.basicpay ,e.empcode, d.deptname, d.deptcode
+from emp as e 
+join dept as d on e.deptcode = d.deptcode
+where e.basicpay =
+(select  max(e2.basicpay)
+from emp as e2
+WHERE e2.deptcode = e.deptcode);
+
+/*44*/
+select empname, basicpay
+from emp 
+order by basicpay desc
+limit 1 offset 1;
+
+/*45*/
+select empname, basicpay
+from emp 
+order by basicpay desc
+limit 1 offset 4;
+
+/*46*/
+select e.empname, e.empcode, e.basicpay , e.sex
+from emp as e
+where e.sex = 'F' 
+and e.basicpay <
+ (select max(ep.basicpay)
+	from emp as ep
+	where ep.sex ='F' );
+
+/*47*/
+select e.empname, e.empcode, e.basicpay , e.sex , d.deptname
+from emp as e
+join dept as d on e.deptcode = d.deptcode
+where e.sex = 'F' 
+and e.basicpay <
+ (select max(ep.basicpay)
+	from emp as ep
+	where ep.sex ='F' );
+                    
+/*48*/
+
+
+
+
+
+
+
+
 
 
