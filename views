@@ -1,0 +1,100 @@
+//*session 3 */
+/*1*/
+CREATE VIEW AgeView AS
+SELECT emp.empname, emp.empcode, 
+       TIMESTAMPDIFF(YEAR, emp.birthdate, CURDATE()) AS age 
+FROM emp;
+    
+SELECT * FROM AgeView;
+
+/*2*/
+CREATE VIEW ExpView AS
+SELECT distinct emp.empname, 
+       emp.empcode, 
+       TIMESTAMPDIFF(YEAR, emp.joindate, CURDATE()) AS experience
+FROM emp;
+SELECT * FROM ExpView;
+
+/*3*/
+create view currentsalary as
+SELECT e.empcode, e.empname, e.desigcode, e.gradecode, 
+       s.salmonth AS latest_salary_date, 
+       (s.basic + s.allow - s.deduct) AS takehome_pay
+FROM emp e
+JOIN salary s 
+    ON e.empcode = s.empcode
+JOIN (
+    -- Subquery to get the latest salary date for each employee
+    SELECT empcode, MAX(salmonth) AS latest_salary_date
+    FROM salary
+    GROUP BY empcode
+) latest ON s.empcode = latest.empcode 
+         AND s.salmonth = latest.latest_salary_date;
+SELECT * FROM currentsalary;
+
+/*3*/ /*both gives sames result*/
+SELECT e.empcode, e.empname, s.salmonth, (s.basic + s.allow - s.deduct) AS takehome_pay
+FROM emp e
+JOIN salary s 
+    ON e.empcode = s.empcode
+WHERE s.salmonth = (
+    SELECT MAX(salmonth) 
+    FROM salary 
+    WHERE empcode = e.empcode
+);
+
+/*4
+*/
+SELECT * FROM AgeView;
+
+CREATE OR REPLACE VIEW AgeView AS
+SELECT empcode, empname, desigcode, gradecode, 
+       supcode,  -- Add supcode to the view
+       TIMESTAMPDIFF(YEAR, birthdate, CURDATE()) AS age
+FROM emp;
+
+SELECT e1.empname AS employee_name, e1.age AS employee_age, 
+       e2.empname AS supervisor_name, e2.age AS supervisor_age
+FROM AgeView e1
+JOIN AgeView e2 
+    ON e1.supcode = e2.empcode  -- This should now work since supcode is part of AgeView
+WHERE e1.age > e2.age;
+
+/*5*/
+create view total_emp_dept as
+select count(e.empcode) as emp_count,
+e.deptcode 
+from emp as e
+join dept as  d
+on  d.deptcode = e.deptcode
+group by deptcode;
+
+select * from total_emp_dept;
+
+/*6*/
+create view total_org as
+SELECT COUNT(empcode) AS total_people
+FROM emp;
+
+select * from total_org;
+
+/*7*/
+CREATE OR REPLACE VIEW total_emp_dept AS
+SELECT COUNT(e.empcode) AS emp_count,
+       e.deptcode 
+FROM emp AS e
+JOIN dept AS d ON d.deptcode = e.deptcode
+GROUP BY e.deptcode;
+
+
+CREATE OR REPLACE VIEW total_org AS
+SELECT COUNT(empcode) AS total_people
+FROM emp;
+
+SELECT d.deptname, 
+       ted.emp_count,
+       t.total_people,
+       (ted.emp_count / t.total_people * 100) AS percentage
+FROM dept d
+JOIN total_emp_dept ted ON d.deptcode = ted.deptcode
+CROSS JOIN total_org t;  -- Changed alias from 'to' to 't'
