@@ -1,0 +1,58 @@
+/*section 4*/
+/*1*/
+CREATE INDEX emp_index ON emp (birthdate);
+SELECT * FROM emp WHERE birthdate = '1955-01-24';
+EXPLAIN SELECT * FROM emp WHERE birthdate = '1990-01-24';
+
+/*2*/
+create index dept_index ON dept(deptname);
+SELECT * FROM dept WHERE deptname = 'accounts';
+
+/*3*/
+CREATE TABLE students (
+    id INT PRIMARY KEY,      
+    name VARCHAR(100),       
+    age INT,
+    gender VARCHAR(10) 
+);
+
+INSERT INTO students (id, name, age, gender) VALUES (101, "jan", 23, 'F');
+
+CREATE INDEX idx_students_id ON students (id);
+SELECT * FROM STUDENTS WHERE ID ='101';
+DROP TABLE STUDENTS;
+DROP INDEX idx_students_id ON students;
+/*4*/
+
+DROP INDEX emp_index ON emp;
+SHOW INDEX FROM emp;
+
+/*5*/
+SHOW INDEX FROM dept;
+
+/*6*/
+/*TEMPORARY TABLE Can be created and executes perfectly but when u close mysql workbench and restart again the 
+the temporary table wont exist and we will get error while executeing select* from student
+we need to create temporary table to retrive data*/
+CREATE TEMPORARY TABLE student (
+    id INT,          
+    name VARCHAR(100),
+    age INT,        
+    gender VARCHAR(10) 
+);
+
+INSERT INTO student (id, name, age, gender) VALUES (1, 'Janani', 20, 'F');
+INSERT INTO student (id, name, age, gender) VALUES (2, 'ananth', 22, 'M');
+
+SELECT * FROM student;
+SELECT * FROM student;
+
+
+/*7*/
+create temporary table test(
+	marks  INT,
+    avgg  INT
+    );
+    
+/*8*/
+drop temporary table test;
