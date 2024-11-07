@@ -95,5 +95,53 @@ db.users.aggregate([
   { $group: { _id: "$address", count: { $sum: 1 } } }
 ])
 
+//AVG AGE
+db.users.aggregate([{ $group :{_id: null , averageAge :{ $avg :"$age"}}}])
+
+//sort and limit 
+db.users.aggregate([
+  { $sort :{age :-1}},       // -1 means descending order and 1 means ascending order
+  { $limit :2}
+])
+
+// Create a query to find all users and only show the username and age fields
+
+db.users.aggregate([
+  { $project : { username:1 , age :1}}
+])
+$project: This stage controls which fields are included in the output. Setting 1 means the field will be included.
+We include only username and age fields in the output.
+
+//_id:0   (id wont be shown in output since _id :0)
+db.users.aggregate([{ $project:{username :1 ,age:1 , _id:0}}])
+
+//match and group
+db.products.aggregate([
+  { $match: { category: "Electronics" } },
+  { $group: { _id: null, averagePrice: { $avg: "$price" } } }
+])
 
 
+// Group all products by category and calculate the total value of products (sum of price) per category
+db.users.aggregate([
+  { $group: { _id: "$Age", totalValue: { $sum: "$age" } } }
+])
+
+
+//create index
+db.users.createIndex({ email: 1 }, { unique: true })
+--> email_1
+db.users.createIndex({ address: 1 })
+-->address_1
+
+// drop index
+db.users.dropIndex("address_1")
+--> { nIndexesWas: 5, ok: 1 }
+
+//set age 30 for all age is 30
+db.users.updateMany({}, { $set: { age: 30} })
+
+//count 
+db.users.aggregate([
+  { $count : "username"
+}])
