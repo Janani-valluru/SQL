@@ -1,0 +1,99 @@
+use dacdb;
+// inset one
+db.employee.insert({username :"janani",email:"jan@gmail,age:24"})
+
+//insert many
+db.users.insertMany([{username: 'monica',
+  email: 'monica@example.com',
+  age: 29},
+{username: 'pheobe',
+  email: 'pheobe@example.com',
+  age: 38
+}
+])
+
+//display
+db.users.find()
+
+// updateOne
+db.users.updateOne(
+{username :"janedoe"},
+  {$set :{age:40}}
+)
+
+//findOne
+db.users.findOne(
+{
+username:"monica"
+})
+
+//findOneAndUpdate
+db.users.findOneAndUpdate({username:"monica"},
+{$set:{age:23}
+})
+
+
+//updateOne
+db.users.updateOne(
+  {username:'janedoe'},
+  {
+$set :{
+address:"LA",
+first_name:"JANEEEE",
+ phone_number: 2225685633
+}
+})
+
+//and 
+db.users.find({ $and: [ { age: { $gt: 25 } }, { age: { $lt: 35 } } ] })
+
+//add or increment
+
+db.users.updateMany({}, { $inc: { age: 5 } })
+
+//decrement
+db.users.updateMany({}, { $inc: { age: -6 } })
+
+//max
+db.users.updateMany({} , {$max : {age:30}})
+
+//create index 
+db.users.createIndex({username : 1})
+
+//getIndexes
+db.users.getIndexes()
+
+//find duplicate
+db.users.aggregate([
+  { $group: { _id: "$email", count: { $sum: 1 } } },
+  { $match: { count: { $gt: 1 } } }
+])
+
+
+//remove duplicate
+
+db.users.aggregate([
+  { $group: { _id: "$email", ids: { $push: "$_id" }, count: { $sum: 1 } } },
+  { $match: { count: { $gt: 1 } } }
+]).forEach(function(doc) {
+  // Remove all but the first document with the duplicate email
+  doc.ids.shift(); // Remove the first element (keep it)
+  db.users.deleteMany({ _id: { $in: doc.ids } });
+});
+
+
+//find one 
+
+db.users.findOne({ age: { $gt: 30 } })
+
+
+//delete
+db.users.deleteOne({email:'rachel@example.com'})
+
+//count of same address
+db.users.aggregate([
+  { $group: { _id: "$address", count: { $sum: 1 } } }
+])
+
+
+
