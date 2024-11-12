@@ -141,7 +141,7 @@ db.users.dropIndex("address_1")
 //set age 30 for all age is 30
 db.users.updateMany({}, { $set: { age: 30} })
 
-//count 
+
 db.users.aggregate([
   { $count : "username"
 }])
